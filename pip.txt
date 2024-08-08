@@ -33,3 +33,8 @@ STATICFILES_DIRS = [
 ]
 
 then run "python manage.py collectstatic"
+in html use this
+{% load static %}
+<link rel="stylesheet" href="{%static 'path of css file'%}">
+
+any change in static make it in the original one then run collectstatic to be moved in the system static file
