@@ -1,0 +1,23 @@
+in cmd install virtualenv
+py -m venv envname 
+envname\Scripts\activate
+py -m pip install Django
+navigate to env and "django-admin startproject projectname"
+navigate to projectname then "py manage.py runserver "
+py manage.py migrate
+py manage.py startapp appname
+at seeings.py 
+INSTALLED_APPS = [
+    'appname.apps.AppnameConfig',]  # add this 
+
+including another URLconf in project urls
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('appname/', include('appname.urls'))
+
+-----Django Admin  ------
+py manage.py createsuperuser  
+
+
+dtl:
+filters:
+|capfirst    |default    |slice:':'    |length  |add:"anythig"   |cut:'anythig'  |filesizeformat
