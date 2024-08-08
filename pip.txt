@@ -38,3 +38,6 @@ in html use this
 <link rel="stylesheet" href="{%static 'path of css file'%}">
 
 any change in static make it in the original one then run collectstatic to be moved in the system static file
+
+--------------install mongodb --------------
+python -m pip install pymongo 
