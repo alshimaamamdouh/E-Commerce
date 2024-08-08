@@ -21,3 +21,15 @@ py manage.py createsuperuser
 dtl:
 filters:
 |capfirst    |default    |slice:':'    |length  |add:"anythig"   |cut:'anythig'  |filesizeformat
+
+
+adding static files:
+make a folder called static inside your project
+then add to settings.py
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'path of static file'),
+]
+
+then run "python manage.py collectstatic"
