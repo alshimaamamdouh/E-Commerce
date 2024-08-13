@@ -55,3 +55,15 @@ with def _close(self):
     if self.connection is not None:
         # existing code
 py manage.py migrate --fake  # must be --fake to avoid unsupported migrations
+
+put your classes in model.py
+----Create Serializers for API -----
+
+Use Django REST Framework to serialize your models so they can be sent as JSON to the frontend.
+pip install djangorestframework
+
+
+###  important note ###
+to add image fileld you must run 
+python -m pip install Pillow
+
