@@ -1,15 +1,13 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from .models import Product, CartItem, Category, Order, OrderItem, Review
+from rest_framework.views import APIView
 from .serializers import ProductSerializer, CartItemSerializer, CategorySerializer, OrderSerializer, ReviewSerializer, UserSerializer
 
-
-def index(request):
-    return render(request, 'backend/index.html')
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -39,10 +37,29 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
 
+
+class ProductsViewSet(APIView):
+    def post(self, request):
+        # Your custom POST handling logic
+        data = request.data
+        new_product = Product(name = request.data.get('name'), price = request.data.get('price'))
+        new_product.save() 
+        # Process the data
+        return Response({"message": "Processed!"}, status=status.HTTP_200_OK)
+    
+    def get(self, request):
+        # Handle GET request logic
+        # Fetch and return data
+        data = Product.objects.all()
+        serializer = ProductSerializer(data, many=True)
+        return Response({"message": "Processed GET request!", "data":serializer.data }, status=status.HTTP_200_OK)
+
+    def put(self, request, product_id):
+        # Handle PUT request logic
+        data = request.data
+        # Update the resource entirely
+        return Response({"message": "Processed PUT request!"}, status=status.HTTP_200_OK)
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
