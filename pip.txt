@@ -41,3 +41,17 @@ any change in static make it in the original one then run collectstatic to be mo
 
 --------------install mongodb --------------
 python -m pip install pymongo 
+
+--------------------- install mongo ORM -----------------
+pip install dnspython
+pip install mongoengine #ORM Tool
+pip install djongo # used 
+
+In  env\lib\site-packages\djongo\base.py
+change def _close(self):
+    if self.connection:
+        # existing code
+with def _close(self):
+    if self.connection is not None:
+        # existing code
+py manage.py migrate --fake  # must be --fake to avoid unsupported migrations
