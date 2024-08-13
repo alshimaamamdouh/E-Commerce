@@ -18,8 +18,8 @@ def index(request):
    #return HttpResponse(template.render())
    #data = {'name':'alshimaa', 'job':'engineer'}
    #data = {'name':'Mobile', 'price':'123LE', 'seller_name':'global company'}
-   tt =  Test_coll(name='Mobile')
-   tt.save()
+   #tt =  Test_coll(name='Mobile')
+   #tt.save()
    return render(request, 'backend/index.html') 
 
 class ProductViewSet(viewsets.ModelViewSet):
