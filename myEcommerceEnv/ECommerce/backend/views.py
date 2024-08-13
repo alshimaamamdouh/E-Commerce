@@ -3,24 +3,24 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth.models import User
-from .models import Product, CartItem
+from .models import Product, CartItem, Test_coll
 from .serializers import ProductSerializer, CartItemSerializer
-
-
-""" 
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+
+
+
 
 def index(request):
 
    #template = loader.get_template('backend/index.html')
    #return HttpResponse(template.render())
    #data = {'name':'alshimaa', 'job':'engineer'}
-   data = {'name':'Mobile', 'price':'123LE', 'seller_name':'global company'}
-   products.insert_one(data)
-   index_data = products.find()
-   return render(request, 'backend/index.html',data) """
+   #data = {'name':'Mobile', 'price':'123LE', 'seller_name':'global company'}
+   tt =  Test_coll(name='Mobile')
+   tt.save()
+   return render(request, 'backend/index.html') 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
