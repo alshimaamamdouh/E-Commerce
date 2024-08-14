@@ -55,15 +55,60 @@ class ProductsViewSet(APIView):
         serializer = ProductSerializer(data, many=True)
         return Response({"message": "Processed GET request!", "data":serializer.data }, status=status.HTTP_200_OK)
 
-    def put(self, request, product_id):
-        # Handle PUT request logic
-        data = request.data
-        # Update the resource entirely
+    def put(self, request):
+        product_id = request.data.get('product_id')
+        new_product = get_object_or_404(Product, product_id=product_id)
+        name = request.data.get('name')
+        price = request.data.get('price')
+        description = request.data.get('description')
+        category = request.data.get('category')
+        stock = request.data.get('stock')
+        
+        new_product.name = name
+        new_product.price = price
+        new_product.description = description
+        new_product.category = category
+        new_product.stock = stock
+        new_product.save()
         return Response({"message": "Processed PUT request!"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        product_id = request.data.get('product_id')
+        get_product = get_object_or_404(Product, product_id=product_id)
+        get_product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    def post(self, request):
+        # Your custom POST handling logic
+        data = request.data
+        new_Category = Category(name = request.data.get('name'))
+        new_Category.save() 
+        # Process the data
+        return Response({"message": "Processed!"}, status=status.HTTP_200_OK)
+    
+    def get(self, request):
+        # Handle GET request logic
+        # Fetch and return data
+        data = Category.objects.all()
+        serializer = CategorySerializer(data, many=True)
+        return Response({"message": "Processed GET request!", "data":serializer.data }, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        Category_id = request.data.get('Category_id')
+        new_Category = get_object_or_404(Category, Category_id=Category_id)
+        name = request.data.get('name')
+        new_Category.name = name
+        new_Category.save()
+        return Response({"message": "Processed PUT request!"}, status=status.HTTP_200_OK)
+    
+    def delete(self, request):
+        Category_id = request.data.get('Category_id')
+        get_Category = get_object_or_404(Category, Category_id=Category_id)
+        get_Category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CartViewSet(viewsets.ViewSet):
