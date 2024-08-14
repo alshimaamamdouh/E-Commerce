@@ -28,7 +28,7 @@ urlpatterns = [
     
     #cart
     path('cart/<int:user_id>/', cart_list, name='cart-list'),
-    path('cart/<int:user_id>/add/', cart_add, name='cart-add'),
+    path('cart/add/', cart_add, name='cart-add'),
     path('cart/<int:user_id>/update/', cart_update, name='cart-update'),
     path('cart/<int:user_id>/remove/<int:product_id>/', cart_remove, name='cart-remove'),
     

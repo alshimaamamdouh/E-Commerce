@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+import uuid
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -120,8 +121,9 @@ class CartViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'])
-    def add_to_cart(self, request, user_id):
-        product_id = request.data.get('product_id')
+    def add_to_cart(self, request):
+        product_id = uuid.UUID(request.data.get('product_id'))
+        user_id = uuid.UUID(request.data.get('user_id'))
         quantity = request.data.get('quantity', 1)
         user = get_object_or_404(User, id=user_id)
         product = get_object_or_404(Product, id=product_id)
