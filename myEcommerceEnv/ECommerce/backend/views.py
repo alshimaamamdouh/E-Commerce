@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.models import User
 from .models import Product, CartItem, Category, Order, OrderItem, Review
 from rest_framework.views import APIView
-from .serializers import ProductSerializer, CartItemSerializer, CategorySerializer, OrderSerializer, ReviewSerializer, UserSerializer
+from .serializers import ProductSerializer, CartItemSerializer, CategorySerializer, OrderSerializer, ReviewSerializer , UserSerializer
 
 
 
@@ -14,7 +14,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def get_permissions(self):
+    """ def get_permissions(self):
         if self.action in ['create']:
             self.permission_classes = [AllowAny]
         else:
@@ -33,8 +33,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def me(self, request):
-        serializer = self.get_serializer(request.user)
-        return Response(serializer.data)
+        serializer = self.get_serializer(request.user) """
+        #return Response({"message": "Processed!"})
 
 
 
@@ -80,7 +80,7 @@ class ProductsViewSet(APIView):
 
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(APIView):
     def post(self, request):
         # Your custom POST handling logic
         data = request.data
