@@ -76,3 +76,10 @@ py manage.py migrate
 ############### create user ############
 py manage.py createsuperuser
 
+
+########### re migrate ###########
+rm -rf your_app/migrations
+python manage.py makemigrations
+python manage.py migrate --fake
+
+

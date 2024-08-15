@@ -20,11 +20,13 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
 # Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = ['id', 'name', 'slug']
+
 
 # Product Serializer
 class ProductSerializer(serializers.ModelSerializer):

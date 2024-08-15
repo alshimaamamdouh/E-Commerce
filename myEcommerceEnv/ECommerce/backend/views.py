@@ -1,21 +1,18 @@
 from rest_framework import viewsets, status
-import uuid
 from rest_framework.response import Response
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from .models import Product, CartItem, Category, Order, OrderItem, Review
-from rest_framework.views import APIView
-from .serializers import ProductSerializer, CartItemSerializer, CategorySerializer, OrderSerializer, ReviewSerializer , UserSerializer
-
-
+from .serializers import ProductSerializer, CartItemSerializer, CategorySerializer, OrderSerializer, ReviewSerializer, UserSerializer
+import uuid
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    """ def get_permissions(self):
+    def get_permissions(self):
         if self.action in ['create']:
             self.permission_classes = [AllowAny]
         else:
@@ -34,83 +31,73 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def me(self, request):
-        serializer = self.get_serializer(request.user) """
-        #return Response({"message": "Processed!"})
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
+class ProductsViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
+    @action(detail=False, methods=['get'])
+    def list_products(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
+    @action(detail=False, methods=['post'])
+    def create_product(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-class ProductsViewSet(APIView):
-    def post(self, request):
-        # Your custom POST handling logic
-        data = request.data
-        new_product = Product(name = request.data.get('name'), price = request.data.get('price'))
-        new_product.save() 
-        # Process the data
-        return Response({"message": "Processed!"}, status=status.HTTP_200_OK)
-    
-    def get(self, request):
-        # Handle GET request logic
-        # Fetch and return data
-        data = Product.objects.all()
-        serializer = ProductSerializer(data, many=True)
-        return Response({"message": "Processed GET request!", "data":serializer.data }, status=status.HTTP_200_OK)
+    @action(detail=True, methods=['put'])
+    def update_product(self, request, pk=None):
+        product = self.get_object()
+        serializer = self.get_serializer(product, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
-    def put(self, request):
-        product_id = request.data.get('product_id')
-        new_product = get_object_or_404(Product, product_id=product_id)
-        name = request.data.get('name')
-        price = request.data.get('price')
-        description = request.data.get('description')
-        category = request.data.get('category')
-        stock = request.data.get('stock')
-        
-        new_product.name = name
-        new_product.price = price
-        new_product.description = description
-        new_product.category = category
-        new_product.stock = stock
-        new_product.save()
-        return Response({"message": "Processed PUT request!"}, status=status.HTTP_200_OK)
-    
-    def delete(self, request):
-        product_id = request.data.get('product_id')
-        get_product = get_object_or_404(Product, product_id=product_id)
-        get_product.delete()
+    @action(detail=True, methods=['delete'])
+    def delete_product(self, request, pk=None):
+        product = self.get_object()
+        self.perform_destroy(product)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
-class CategoryViewSet(APIView):
-    def post(self, request):
-        # Your custom POST handling logic
-        data = request.data
-        new_Category = Category(name = request.data.get('name'))
-        new_Category.save() 
-        # Process the data
-        return Response({"message": "Processed!"}, status=status.HTTP_200_OK)
-    
-    def get(self, request):
-        # Handle GET request logic
-        # Fetch and return data
-        data = Category.objects.all()
-        serializer = CategorySerializer(data, many=True)
-        return Response({"message": "Processed GET request!", "data":serializer.data }, status=status.HTTP_200_OK)
+    @action(detail=False, methods=['post'])
+    def create_category(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def put(self, request):
-        Category_id = request.data.get('Category_id')
-        new_Category = get_object_or_404(Category, Category_id=Category_id)
-        name = request.data.get('name')
-        new_Category.name = name
-        new_Category.save()
-        return Response({"message": "Processed PUT request!"}, status=status.HTTP_200_OK)
+    @action(detail=False, methods=['get'])
+    def list_category(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
     
-    def delete(self, request):
-        Category_id = request.data.get('Category_id')
-        get_Category = get_object_or_404(Category, Category_id=Category_id)
-        get_Category.delete()
+    @action(detail=False, methods=['put'])
+    def update_category(self, request):
+        category_id = request.data.get('id')
+        category = get_object_or_404(Category, id=category_id)
+        serializer = self.get_serializer(category, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['delete'])
+    def delete_category(self, request):
+        category_id = request.data.get('id')
+        category = get_object_or_404(Category, id=category_id)
+        category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 class CartViewSet(viewsets.ViewSet):
 
@@ -153,7 +140,6 @@ class CartViewSet(viewsets.ViewSet):
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
@@ -175,7 +161,6 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         serializer = OrderSerializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
