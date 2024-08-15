@@ -23,9 +23,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 # Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    slug = serializers.SlugField()
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug']
+        fields = '__all__'
+        
 
 
 # Product Serializer
