@@ -1,6 +1,21 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import Product, CartItem, Category, Order, OrderItem, Review
+from djongo import models as djongo_models
+from rest_framework.exceptions import ValidationError
+
+# Custom serializer for ObjectId
+class ObjectIdField(serializers.Field):
+    def to_representation(self, value):
+        if isinstance(value, djongo_models.ObjectId):
+            return str(value)
+        raise ValidationError("Value is not of type ObjectId")
+
+    def to_internal_value(self, data):
+        try:
+            return djongo_models.ObjectId(data)
+        except Exception as e:
+            raise ValidationError(f"Invalid ObjectId: {e}")
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
@@ -20,23 +35,18 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
 # Category Serializer
 class CategorySerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField()
-    name = serializers.CharField()
-    slug = serializers.SlugField()
+    id = ObjectIdField()
+
     class Meta:
         model = Category
         fields = '__all__'
-        
-
 
 # Product Serializer
 class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
-    category_id = serializers.PrimaryKeyRelatedField(
-        queryset=Category.objects.all(), source='category', write_only=True)
+    category_id = ObjectIdField(source='category', write_only=True)
 
     class Meta:
         model = Product
@@ -45,8 +55,7 @@ class ProductSerializer(serializers.ModelSerializer):
 # CartItem Serializer
 class CartItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
-    product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all(), source='product', write_only=True)
+    product_id = ObjectIdField(source='product', write_only=True)
 
     class Meta:
         model = CartItem
@@ -55,8 +64,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 # OrderItem Serializer
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
-    product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all(), source='product', write_only=True)
+    product_id = ObjectIdField(source='product', write_only=True)
 
     class Meta:
         model = OrderItem
@@ -73,8 +81,7 @@ class OrderSerializer(serializers.ModelSerializer):
 # Review Serializer
 class ReviewSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
-    product_id = serializers.PrimaryKeyRelatedField(
-        queryset=Product.objects.all(), source='product', write_only=True)
+    product_id = ObjectIdField(source='product', write_only=True)
 
     class Meta:
         model = Review

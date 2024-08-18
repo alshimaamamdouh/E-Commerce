@@ -65,7 +65,6 @@ class ProductsViewSet(viewsets.ModelViewSet):
         self.perform_destroy(product)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -109,9 +108,11 @@ class CartViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'])
     def add_to_cart(self, request):
-        product_id = uuid.UUID(request.data.get('product_id'))
-        user_id = uuid.UUID(request.data.get('user_id'))
+        product_id = request.data.get('product_id')
+        user_id = request.data.get('user_id')
         quantity = request.data.get('quantity', 1)
+        print(f"Adding to cart: product_id={product_id}, user_id={user_id}, quantity={quantity}")
+
         user = get_object_or_404(User, id=user_id)
         product = get_object_or_404(Product, id=product_id)
 
